@@ -22,8 +22,12 @@ pipeline {
             steps {
                 dir('Tetris-V2') {
                     withSonarQubeEnv('sonar-server') {
-                        sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=TetrisVersion1.0 \
-                        -Dsonar.projectKey=TetrisVersion1.0 '''
+                        sh '''  $SCANNER_HOME/bin/sonar-scanner \
+    -Dsonar.projectName=TetrisVersion1.0 \
+    -Dsonar.projectKey=TetrisVersion1.0 \
+    -Dsonar.sources=. \
+    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info || true
+'''
                     }
                 }
             }
@@ -85,11 +89,11 @@ pipeline {
                 sh 'trivy image avian19/tetrisv2:${BUILD_NUMBER} > trivyimage.txt' 
             }
         }
-        stage('Checkout Code') {
-            steps {
-                git branch: 'main', url: 'https://github.com/nishukumari17/Tetris-Project.git'
-            }
-        }
+        // stage('Checkout Code') {
+        //     steps {
+        //         git branch: 'main', url: 'https://github.com/nishukumari17/Tetris-Project.git'
+        //     }
+        // }
         stage('Update Deployment file') {
             environment {
                  GIT_REPO_NAME = "Tetris-Project"
